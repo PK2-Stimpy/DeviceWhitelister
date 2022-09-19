@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DeviceWAdder:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/DeviceWAdder_jar</output-path>
+    <root id="archive" name="DeviceWAdder.jar">
+      <element id="module-output" name="DeviceWAdder" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/alexkasko/krakatau/krakatau-lib/1.1/krakatau-lib-1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/python/jython-standalone/2.7-rc3/jython-standalone-2.7-rc3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/eclipse/jdt/core/compiler/ecj/4.4.2/ecj-4.4.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.4/commons-io-2.4.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
