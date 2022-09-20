@@ -90,6 +90,15 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
 
         try (final OutputProcessor commandOutputProcessor = commandExecutor.executeCommand(CMD_DF)){
             commandOutputProcessor.processOutput((String outputLine) -> {
+                if(outputLine.startsWith(DISK_PREFIX)) {
+                    String device = outputLine.split(" ")[0];
+                    DiskInfo disk = new DiskInfo(device);
+                    disk.setMountPoint("/");
+                    this.readDiskInfo(disk);
+                    if(disk.isUSB())
+                        LinuxStorageDeviceDetector.getUSBDevice(disk.getMountPoint(), disk.getName(), disk.getDevice(), disk.getUuid()).ifPresent(listDevices::add);
+                }
+                /*
                 final Matcher matcher = command1Pattern.matcher(outputLine);
 
                 if (matcher.matches()) {
@@ -110,7 +119,7 @@ public class LinuxStorageDeviceDetector extends AbstractStorageDeviceDetector {
                                     .ifPresent(listDevices::add);
                         }
                     }
-                }
+                }*/
             });
 
         } catch (IOException e) {
