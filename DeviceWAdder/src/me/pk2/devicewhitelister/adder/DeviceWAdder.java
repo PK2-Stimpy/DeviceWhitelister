@@ -136,14 +136,7 @@ public class DeviceWAdder {
             System.out.println("Modifying jar... ");
 
             ProcessBuilder processBuilder = new ProcessBuilder();
-            switch (OS.substring(0, 3)) {
-                case "lin":
-                    processBuilder.command("bash", "-c", "jar", "-uvf0 " + filename + " me/pk2/devicewhitelister/DeviceWhitelister.class");
-                    break;
-                default:
-                    processBuilder.command("jar", "-uvf0", filename, "me/pk2/devicewhitelister/DeviceWhitelister.class");
-                    break;
-            }
+            processBuilder.command("jar", "-uvf0", filename, "me/pk2/devicewhitelister/DeviceWhitelister.class");
 
             try {
                 jarFile.close();
