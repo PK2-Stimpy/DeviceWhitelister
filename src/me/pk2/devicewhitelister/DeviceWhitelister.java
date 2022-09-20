@@ -3,6 +3,8 @@ package me.pk2.devicewhitelister;
 import net.samuelcampos.usbdrivedetector.USBDeviceDetectorManager;
 import net.samuelcampos.usbdrivedetector.USBStorageDevice;
 import net.samuelcampos.usbdrivedetector.events.DeviceEventType;
+import net.samuelcampos.usbdrivedetector.utils.OSUtils;
+import net.samuelcampos.usbdrivedetector.utils.OSType;
 
 import java.io.PrintStream;
 
@@ -47,23 +49,46 @@ public class DeviceWhitelister {
                 System.out.println("INVALID UUID " + v.getUuid());
         });*/
 
-        manager.addDriveListener((event) -> {
-            if(event.getEventType() == DeviceEventType.REMOVED)
-                return;
-
-            USBStorageDevice device = event.getStorageDevice();
-            System.out.println("CHECK " + device.getUuid());
-            if(!checkUUID(device, allowed)) {
-                System.out.println(">> INVALID UUID " + device.getUuid());
-                System.out.print(">> UNMOUNTING UUID " + device.getUuid() + "... ");
-
+        if(OSUtils.getOsType() != OSType.WINDOWS) {
+            while(true) {
+                manager.getRemovableDevices().forEach(device -> {
+                    System.out.println("CHECK " + device.getUuid());
+                    if (!DeviceWhitelister.checkUUID(device, allowed)) {
+                        System.out.println(">> INVALID UUID " + device.getUuid());
+                        System.out.print(">> UNMOUNTING UUID " + device.getUuid() + "... ");
+                        try {
+                            manager.unmountStorageDevice(device);
+                            System.out.println("OK!");
+                        }
+                        catch (Exception exception) {
+                            System.out.println("FAIL! " + exception.getMessage());
+                        }
+                    }
+                });
+    
                 try {
-                    manager.unmountStorageDevice(device);
-                    System.out.println("OK!");
-                } catch (Exception exception) {
-                    System.out.println("FAIL! " + exception.getMessage());
-                }
+                    Thread.sleep(1000);
+                } catch(InterruptedException e) { e.printStackTrace(); }
             }
-        });
+        } else {
+            manager.addDriveListener((event) -> {
+                if(event.getEventType() == DeviceEventType.REMOVED)
+                    return;
+
+                USBStorageDevice device = event.getStorageDevice();
+                System.out.println("CHECK " + device.getUuid());
+                if(!checkUUID(device, allowed)) {
+                    System.out.println(">> INVALID UUID " + device.getUuid());
+                    System.out.print(">> UNMOUNTING UUID " + device.getUuid() + "... ");
+
+                    try {
+                        manager.unmountStorageDevice(device);
+                        System.out.println("OK!");
+                    } catch (Exception exception) {
+                        System.out.println("FAIL! " + exception.getMessage());
+                    }
+                }
+            });
+        }
     }
 }
